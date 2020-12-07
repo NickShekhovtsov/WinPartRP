@@ -88,5 +88,10 @@ namespace WinFormPlayer
                 listBox1.SetSelected(listBox1.Items.Count, true);
             button3.Text = "Stop";
         }
+
+       
+
+        private void trackBar1_Scroll(object sender, EventArgs e) => Player.Volume = ((TrackBar)sender).Value;
+        
     }
 }
