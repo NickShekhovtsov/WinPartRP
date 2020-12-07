@@ -21,22 +21,7 @@ namespace WinFormPlayer
             Player = new AudioPlayer();
             
         }
-        private void PlayButtonState (Button button3)
-        {
-            if (button3.Text == "Play")
-            {
-                Player.Play();
-                button3.Text = "Stop";
-                return;
-            }
-
-            if (button3.Text == "Stop")
-            {
-                Player.Pause();
-                button3.Text = "Play";
-                return;
-            }
-        }
+       
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -55,8 +40,21 @@ namespace WinFormPlayer
 
         private void button3_Click(object sender, EventArgs e)
         {
-            PlayButtonState(button3);
-            //Player.Pause();
+            
+            if (button3.Text == "Play")
+            {
+                Player.Play();
+                button3.Text = "Stop";
+                return;
+            }
+
+            if (button3.Text == "Stop")
+            {
+                Player.Pause();
+                button3.Text = "Play";
+                return;
+            }
+            
         }
 
         private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
@@ -64,7 +62,10 @@ namespace WinFormPlayer
             if (((ListBox)sender).SelectedItem == null)
                 return;
             Player.SelectAudio(((ListBox)sender).SelectedIndex);
-            PlayButtonState(button3);
+            
+            button3.Text = "Stop";
+            
+
         }
         
 
@@ -75,7 +76,7 @@ namespace WinFormPlayer
             listBox1.SetSelected(++listBox1.SelectedIndex, true);
             else
                 listBox1.SetSelected(0, true);
-            PlayButtonState(button3);
+            button3.Text = "Stop";
         }
 
         private void buPrev_Click(object sender, EventArgs e)
@@ -85,7 +86,7 @@ namespace WinFormPlayer
                 listBox1.SetSelected(--listBox1.SelectedIndex, true);
             else
                 listBox1.SetSelected(listBox1.Items.Count, true);
-            PlayButtonState(button3);
+            button3.Text = "Stop";
         }
     }
 }
