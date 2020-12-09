@@ -31,7 +31,7 @@ namespace WinFormPlayer
     class AudioPlayer
     {
         private WindowsMediaPlayer wmp;
-        private List<Song> playlist;
+        public List<Song> playlist;
         private int currentIndex;
         public Song CurrentSong => playlist[currentIndex];
         public AudioPlayer()

@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text.Json;
+
 
 namespace WinFormPlayer
 {
@@ -15,14 +17,15 @@ namespace WinFormPlayer
     public partial class Form1 : Form
     {
         private SocketManager client = new SocketManager();
-        private AudioPlayer Player;
-       
-        
+        private AudioPlayer Player=new AudioPlayer();
+        ContainerForSongInfo cfsi = new ContainerForSongInfo();
+
+        public object JsonSerializer { get; private set; }
+
         public Form1()
         {
 
             InitializeComponent();
-            Player = new AudioPlayer();
             InputServerWorkAsync();
             Player.AudioSelected += (s, e) =>
               {
@@ -30,10 +33,7 @@ namespace WinFormPlayer
               };
             
         }
-        private void LabelChange()
-        {
-            laName.Text = Player.CurrentSong.Name;
-        }
+        
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -43,9 +43,33 @@ namespace WinFormPlayer
                 {
                     Player.LoadAudio(dialog.FileNames);
                     listBox1.Items.Clear();
-                    listBox1.Items.AddRange(Player.Playlist);
+                    listBox1.Items.AddRange(Player.Playlist); 
+                    
+                    //for (int i = 0; i < listBox1.Items.Count; i++)
+                    //{
+                    //    cfsi.songInfos.Add(new SongInfo());
+                    //}
+                    for (int i=0;i<listBox1.Items.Count;i++)
+                    {
+                        cfsi.songInfos.Add(new SongInfo(Player.playlist[i].Name, Player.playlist[i].Duration));
+                    }
                 }
             }
+
+            byte[] outputdata;
+            outputdata = new byte[1024];
+            string outputjson=System.Text.Json.JsonSerializer.Serialize<ContainerForSongInfo>(cfsi);
+            
+            outputdata = Encoding.Unicode.GetBytes(outputjson);
+
+            try
+            {
+                client.client.Send(outputdata);
+            } 
+            catch (System.Net.Sockets.SocketException d)
+            {
+
+            };
         }
 
 
