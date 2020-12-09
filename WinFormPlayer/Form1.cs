@@ -86,10 +86,10 @@ namespace WinFormPlayer
         private void buPrev_Click(object sender, EventArgs e)
         {
             Player.Previous();
-            if (listBox1.SelectedIndex > 1)
+            if (listBox1.SelectedIndex > 0)
                 listBox1.SetSelected(--listBox1.SelectedIndex, true);
             else
-                listBox1.SetSelected(listBox1.Items.Count, true);
+                listBox1.SetSelected(listBox1.Items.Count-1, true);
             button3.Text = "Stop";
         }
 
@@ -120,28 +120,23 @@ namespace WinFormPlayer
 
                     client.msg = builder.ToString();
 
-                    if (client.msg == "play")
+                    if (client.msg == "play" || client.msg == "stop")
                     {
-                        button3_Click(button3, EventArgs.Empty);
-
-                        
+                        Invoke((MethodInvoker)delegate {
+                            button3_Click(button3, EventArgs.Empty);
+                        });
                     }
-
-                    if (client.msg == "stop")
+                    else if (client.msg == "next")
                     {
-                        button3_Click(button3, EventArgs.Empty);
-
-                        
+                        Invoke((MethodInvoker)delegate {
+                            buNext_Click(buNext, EventArgs.Empty);
+                        });
                     }
-
-                    if (client.msg == "next")
+                    else if (client.msg == "prev")
                     {
-                        buNext_Click(buNext, EventArgs.Empty);
-                    }
-
-                    if (client.msg == "prev")
-                    {
-                        buPrev_Click(buPrev, EventArgs.Empty);
+                        Invoke((MethodInvoker)delegate {
+                            buPrev_Click(buPrev, EventArgs.Empty);
+                        });
                     }
 
                 }

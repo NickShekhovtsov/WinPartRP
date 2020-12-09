@@ -7,17 +7,18 @@ using System.Threading.Tasks;
 using WMPLib;
 
 namespace WinFormPlayer
-{   public enum Status
+{
+    public enum Status
     {
-        
+
     }
     class Song
     {
-       public string Name { get; set; }
+        public string Name { get; set; }
         public double Duration { get; set; }
         public string SourceUrl { get; set; }
-        public IWMPMedia Media { get; set; } 
-        
+        public IWMPMedia Media { get; set; }
+
         public Song(IWMPMedia media)
         {
             Media = media;
@@ -34,7 +35,7 @@ namespace WinFormPlayer
         private int currentIndex;
         public Song CurrentSong => playlist[currentIndex];
         public AudioPlayer()
-        {   
+        {
             wmp = new WindowsMediaPlayer();
             playlist = new List<Song>();
             wmp.settings.volume = 50;
@@ -72,6 +73,10 @@ namespace WinFormPlayer
             wmp.controls.pause();
         }
 
+        public bool isPlaying()
+        {
+            return wmp.playState == WMPPlayState.wmppsPlaying;
+        }
 
         public void Stop()
         {
@@ -79,7 +84,8 @@ namespace WinFormPlayer
         }
 
         public void Next()
-        {   if (currentIndex < playlist.Count - 1)
+        {
+            if (currentIndex < playlist.Count - 1)
                 SelectAudio(++currentIndex);
             else SelectAudio(0);
 
@@ -89,7 +95,7 @@ namespace WinFormPlayer
         {
             if (currentIndex > 0)
                 SelectAudio(--currentIndex);
-            else SelectAudio(playlist.Count);
+            else SelectAudio(playlist.Count-1);
         }
 
     }
