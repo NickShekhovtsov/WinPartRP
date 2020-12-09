@@ -11,20 +11,29 @@ using System.Windows.Forms;
 
 namespace WinFormPlayer
 {
+   
     public partial class Form1 : Form
     {
         private SocketManager client = new SocketManager();
         private AudioPlayer Player;
-
+       
+        
         public Form1()
         {
 
             InitializeComponent();
             Player = new AudioPlayer();
             InputServerWorkAsync();
-
+            Player.AudioSelected += (s, e) =>
+              {
+                  laName.Text = e.Name;
+              };
+            
         }
-
+        private void LabelChange()
+        {
+            laName.Text = Player.CurrentSong.Name;
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -68,7 +77,7 @@ namespace WinFormPlayer
             Player.SelectAudio(((ListBox)sender).SelectedIndex);
 
             button3.Text = "Stop";
-
+            
 
         }
 
@@ -81,6 +90,7 @@ namespace WinFormPlayer
             else
                 listBox1.SetSelected(0, true);
             button3.Text = "Stop";
+           
         }
 
         private void buPrev_Click(object sender, EventArgs e)
@@ -91,6 +101,7 @@ namespace WinFormPlayer
             else
                 listBox1.SetSelected(listBox1.Items.Count-1, true);
             button3.Text = "Stop";
+           
         }
 
 
@@ -148,5 +159,9 @@ namespace WinFormPlayer
             await Task.Run(() => InputServerWork());
         }
 
+        private void laName_DockChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

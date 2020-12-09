@@ -34,6 +34,7 @@
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.buNext = new System.Windows.Forms.Button();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.laName = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -97,11 +98,23 @@
             this.trackBar1.Value = 10;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
+            // laName
+            // 
+            this.laName.AutoSize = true;
+            this.laName.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.laName.Location = new System.Drawing.Point(301, 53);
+            this.laName.Name = "laName";
+            this.laName.Size = new System.Drawing.Size(0, 14);
+            this.laName.TabIndex = 6;
+            this.laName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.laName.DockChanged += new System.EventHandler(this.laName_DockChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 461);
+            this.Controls.Add(this.laName);
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.buNext);
             this.Controls.Add(this.listBox1);
@@ -126,6 +139,7 @@
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Button buNext;
         private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.Label laName;
     }
 }
 
