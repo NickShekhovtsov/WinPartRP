@@ -33,6 +33,7 @@ namespace WinFormPlayer
             Player.AudioSelected += (s, e) =>
               {
                   laName.Text = e.Name;
+                  
                   sf.name = e.Name;
                   sf.duration = e.Duration;
                   byte[] outputdata;
@@ -209,11 +210,9 @@ namespace WinFormPlayer
 
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
-            var dir = new System.IO.DirectoryInfo(@"H:\Downloads\Music\");
-            var files = dir.GetFiles("*.mp3");
-           // Player.LoadAudio(files.);
+
         }
     }
 }

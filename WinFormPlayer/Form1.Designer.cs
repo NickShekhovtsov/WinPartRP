@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.button1 = new System.Windows.Forms.Button();
             this.buPrev = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -121,10 +122,12 @@
             this.Controls.Add(this.button3);
             this.Controls.Add(this.buPrev);
             this.Controls.Add(this.button1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximumSize = new System.Drawing.Size(800, 500);
             this.MinimumSize = new System.Drawing.Size(800, 500);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

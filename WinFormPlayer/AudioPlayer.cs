@@ -68,12 +68,12 @@ namespace WinFormPlayer
         public void Play()
         {
             wmp.controls.play();
-            AudioSelected?.Invoke(this, CurrentSong);
+            
         }
         public void Pause()
         {
             wmp.controls.pause();
-            AudioSelected?.Invoke(this, CurrentSong);
+            
         }
 
         public bool isPlaying()
@@ -84,7 +84,6 @@ namespace WinFormPlayer
         public void Stop()
         {
             wmp.controls.stop();
-            AudioSelected?.Invoke(this, CurrentSong);
         }
 
         public void Next()
@@ -92,7 +91,6 @@ namespace WinFormPlayer
             if (currentIndex < playlist.Count - 1)
                 SelectAudio(++currentIndex);
             else SelectAudio(0);
-            AudioSelected?.Invoke(this, CurrentSong);
         }
 
         public void Previous()
@@ -100,7 +98,6 @@ namespace WinFormPlayer
             if (currentIndex > 0)
                 SelectAudio(--currentIndex);
             else SelectAudio(playlist.Count-1);
-            AudioSelected?.Invoke(this, CurrentSong);
         }
 
         public event Action<object,Song> AudioSelected;
