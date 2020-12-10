@@ -12,12 +12,12 @@ namespace WinFormPlayer
     {
         public Socket client;
         public string msg;
-        public SocketManager()
+        public SocketManager(string ip,int port)
         {
             client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
             {
-                client.Connect("127.0.0.1", 8000);
+                client.Connect(ip, port);
                 Console.WriteLine("Connected to server");
             }
             catch (Exception e)
