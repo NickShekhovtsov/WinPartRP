@@ -15,7 +15,7 @@ using System.Text.Json.Serialization;
 namespace WinFormPlayer
 {
    
-    public partial class Form1 : Form
+    public partial class RemotePlayer : Form
     {
         private SocketManager clientaccept = new SocketManager("127.0.0.1",8000);
         private SocketManager clientsend = new SocketManager("127.0.0.2",8080);
@@ -25,7 +25,7 @@ namespace WinFormPlayer
 
         public object JsonSerializer { get; private set; }
 
-        public Form1()
+        public RemotePlayer()
         {
             
             InitializeComponent();
