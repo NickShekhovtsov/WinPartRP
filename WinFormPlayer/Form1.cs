@@ -152,7 +152,7 @@ namespace WinFormPlayer
 
 
 
-        private void trackBar1_Scroll(object sender, EventArgs e) => Player.Volume = ((TrackBar)sender).Value;
+        private void trackBar1_Scroll(object sender, EventArgs e) => Player.Volume = 5*((TrackBar)sender).Value;
 
 
 
