@@ -19,7 +19,7 @@ namespace WinFormPlayer
     {
         private SocketManager clientaccept = new SocketManager("127.0.0.1", 8000);
         private SocketManager clientsend = new SocketManager("127.0.0.2", 8080);
-        private SocketManager volumesend = new SocketManager("127.0.0.3",8088);
+        private SocketManager volumesend = new SocketManager("127.0.0.3",8800);
         private AudioPlayer Player = new AudioPlayer();
         private SongInfo sf = new SongInfo();
         //ContainerForSongInfo cfsi = new ContainerForSongInfo();
@@ -100,17 +100,17 @@ namespace WinFormPlayer
         private void button3_Click(object sender, EventArgs e)
         {
 
-            if (button3.Text == "Play")
+            if (button3.Text == "►")
             {
                 Player.Play();
-                button3.Text = "Stop";
+                button3.Text = "||";
                 return;
             }
 
-            if (button3.Text == "Stop")
+            if (button3.Text == "||")
             {
                 Player.Pause();
-                button3.Text = "Play";
+                button3.Text = "►";
                 return;
             }
 
@@ -123,7 +123,7 @@ namespace WinFormPlayer
                 return;
             Player.SelectAudio(((ListBox)sender).SelectedIndex);
 
-            button3.Text = "Stop";
+            button3.Text = "||";
 
 
         }
@@ -136,7 +136,7 @@ namespace WinFormPlayer
                 listBox1.SetSelected(++listBox1.SelectedIndex, true);
             else
                 listBox1.SetSelected(0, true);
-            button3.Text = "Stop";
+            button3.Text = "||";
 
         }
 
@@ -147,7 +147,7 @@ namespace WinFormPlayer
                 listBox1.SetSelected(--listBox1.SelectedIndex, true);
             else
                 listBox1.SetSelected(listBox1.Items.Count - 1, true);
-            button3.Text = "Stop";
+            button3.Text = "||";
 
         }
 
