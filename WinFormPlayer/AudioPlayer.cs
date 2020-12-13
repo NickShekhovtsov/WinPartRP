@@ -61,9 +61,9 @@ namespace WinFormPlayer
 
         public string[] Playlist => playlist.Select((a) => a.Name).ToArray();
         public int Volume
-        {
+        {   
             get { return wmp.settings.volume; }
-            set { wmp.settings.volume = value; }
+            set {wmp.settings.volume = value; }
         }
         public void Play()
         {
@@ -101,6 +101,7 @@ namespace WinFormPlayer
         }
 
         public event Action<object,Song> AudioSelected;
+        public event Action<object, Song> VolumeChanged;
 
     }
 }

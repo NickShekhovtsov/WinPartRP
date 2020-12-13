@@ -10,5 +10,7 @@ namespace WinFormPlayer
     {
         public string name { get; set; } = "";
         public double duration { get; set; } = 0.0;
+
+        public int volume { get; set; } = 50;
     }
 }

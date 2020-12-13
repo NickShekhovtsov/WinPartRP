@@ -14,12 +14,13 @@ using System.Text.Json.Serialization;
 
 namespace WinFormPlayer
 {
-   
+
     public partial class RemotePlayer : Form
     {
-        private SocketManager clientaccept = new SocketManager("127.0.0.1",8000);
-        private SocketManager clientsend = new SocketManager("127.0.0.2",8080);
-        private AudioPlayer Player=new AudioPlayer();
+        private SocketManager clientaccept = new SocketManager("127.0.0.1", 8000);
+        private SocketManager clientsend = new SocketManager("127.0.0.2", 8080);
+        private SocketManager volumesend = new SocketManager("127.0.0.3",8088);
+        private AudioPlayer Player = new AudioPlayer();
         private SongInfo sf = new SongInfo();
         //ContainerForSongInfo cfsi = new ContainerForSongInfo();
 
@@ -27,13 +28,13 @@ namespace WinFormPlayer
 
         public RemotePlayer()
         {
-            
+
             InitializeComponent();
             InputServerWorkAsync();
             Player.AudioSelected += (s, e) =>
               {
                   laName.Text = e.Name;
-                  
+
                   sf.name = e.Name;
                   sf.duration = e.Duration;
                   byte[] outputdata;
@@ -41,20 +42,20 @@ namespace WinFormPlayer
                   string outputjson = System.Text.Json.JsonSerializer.Serialize<SongInfo>(sf);
 
                   outputdata = Encoding.Unicode.GetBytes(outputjson);
-                 
+
                   try
-                  {     
+                  {
                       clientsend.client.Send(outputdata);
-                      
+
                   }
                   catch (System.Net.Sockets.SocketException d)
                   {
 
                   };
               };
-            
+
         }
-        
+
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -81,7 +82,7 @@ namespace WinFormPlayer
             //byte[] outputdata;
             //outputdata = new byte[1024];
             //string outputjson=System.Text.Json.JsonSerializer.Serialize<SongInfo>(cfsi);
-            
+
             //outputdata = Encoding.Unicode.GetBytes(outputjson);
 
             //try
@@ -112,7 +113,7 @@ namespace WinFormPlayer
                 button3.Text = "Play";
                 return;
             }
-            
+
 
         }
 
@@ -123,7 +124,7 @@ namespace WinFormPlayer
             Player.SelectAudio(((ListBox)sender).SelectedIndex);
 
             button3.Text = "Stop";
-            
+
 
         }
 
@@ -136,7 +137,7 @@ namespace WinFormPlayer
             else
                 listBox1.SetSelected(0, true);
             button3.Text = "Stop";
-           
+
         }
 
         private void buPrev_Click(object sender, EventArgs e)
@@ -145,14 +146,37 @@ namespace WinFormPlayer
             if (listBox1.SelectedIndex > 0)
                 listBox1.SetSelected(--listBox1.SelectedIndex, true);
             else
-                listBox1.SetSelected(listBox1.Items.Count-1, true);
+                listBox1.SetSelected(listBox1.Items.Count - 1, true);
             button3.Text = "Stop";
-           
+
         }
 
 
 
-        private void trackBar1_Scroll(object sender, EventArgs e) => Player.Volume = ((TrackBar)sender).Value;
+        private void trackBar1_Scroll(object sender, EventArgs e)
+            {
+
+            Player.Volume = ((TrackBar) sender).Value;
+            sf.volume = Player.Volume;
+            byte[] outputdata;
+            outputdata = new byte[1024];
+            string outputjson = System.Text.Json.JsonSerializer.Serialize<SongInfo>(sf);
+
+            outputdata = Encoding.Unicode.GetBytes(outputjson);
+
+            try
+            {
+                clientsend.client.Send(outputdata);
+
+            }
+            catch (System.Net.Sockets.SocketException d)
+            {
+
+            };
+
+
+        }
+
 
 
 
