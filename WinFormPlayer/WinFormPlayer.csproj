@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudioPlayer.cs" />
+    <Compile Include="Commander.cs" />
     <Compile Include="ContainerForSongInfo.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

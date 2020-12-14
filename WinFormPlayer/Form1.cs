@@ -17,11 +17,12 @@ namespace WinFormPlayer
 
     public partial class RemotePlayer : Form
     {
-        private SocketManager clientaccept = new SocketManager("127.0.0.1", 8000);
-        private SocketManager clientsend = new SocketManager("127.0.0.2", 8080);
-        private SocketManager volumesend = new SocketManager("127.0.0.3",8800);
+        private SocketManager sk=new SocketManager("127.0.0.1",8000);
         private AudioPlayer Player = new AudioPlayer();
         private SongInfo sf = new SongInfo();
+        private Commander com=new Commander();
+        public delegate void Play();
+        public event Play OnPlay;
         //ContainerForSongInfo cfsi = new ContainerForSongInfo();
 
         public object JsonSerializer { get; private set; }
@@ -30,32 +31,83 @@ namespace WinFormPlayer
         {
 
             InitializeComponent();
-            InputServerWorkAsync();
+            
+
+            Thread ServTh = new Thread(
+                new ThreadStart(sk.Run));
+            ServTh.Start();
+
+           
+            Player.VolumeChanged += () =>
+              {
+                  Invoke((MethodInvoker)delegate
+                  {
+                      trackBar1.Value = Player.Volume;
+                  });
+              };
+
+            sk.DataCome += ()=>{
+                switch(sk.cm.command)
+                { 
+                    case "play":
+                        //Player.Play();
+                        Invoke((MethodInvoker)delegate
+                        {
+                            button3_Click(button3, EventArgs.Empty);
+                        });
+                        break;
+
+            
+                    case "pause":
+                        Invoke((MethodInvoker)delegate
+                        {
+                            button3_Click(button3, EventArgs.Empty);
+                        });
+
+                        break;
+
+
+                
+
+                
+                    case "next":
+                        Invoke((MethodInvoker)delegate
+                        {
+                            buNext_Click(buNext, EventArgs.Empty);
+                        });
+
+                        break;
+
+                    case "volume":
+                       
+                            Player.Volume = int.Parse(sk.cm.value);
+                        Console.WriteLine($"Playervol {Player.Volume}");
+
+                        break;
+
+                    case "prev":
+                        Invoke((MethodInvoker)delegate
+                        {
+                            buPrev_Click(buPrev, EventArgs.Empty);
+                        });
+
+                        break;
+
+
+                }
+
+            };
             Player.AudioSelected += (s, e) =>
               {
                   laName.Text = e.Name;
-
-                  sf.name = e.Name;
-                  sf.duration = e.Duration;
-                  byte[] outputdata;
-                  outputdata = new byte[1024];
-                  string outputjson = System.Text.Json.JsonSerializer.Serialize<SongInfo>(sf);
-
-                  outputdata = Encoding.Unicode.GetBytes(outputjson);
-
-                  try
-                  {
-                      clientsend.client.Send(outputdata);
-
-                  }
-                  catch (System.Net.Sockets.SocketException d)
-                  {
-
-                  };
+                  sk.cm.name = e.Name;
+                  
+                  
               };
 
         }
 
+        
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -68,52 +120,41 @@ namespace WinFormPlayer
                     listBox1.Items.Clear();
                     listBox1.Items.AddRange(Player.Playlist);
 
-                    //for (int i = 0; i < listBox1.Items.Count; i++)
-                    //{
-                    //    cfsi.songInfos.Add(new SongInfo());
-                    //}
-                    //for (int i=0;i<listBox1.Items.Count;i++)
-                    //{
-                    //    cfsi.songInfos[i]=new SongInfo(Player.playlist[i].Name, Player.playlist[i].Duration);
-                    //}
+                    
                 }
             }
 
-            //byte[] outputdata;
-            //outputdata = new byte[1024];
-            //string outputjson=System.Text.Json.JsonSerializer.Serialize<SongInfo>(cfsi);
-
-            //outputdata = Encoding.Unicode.GetBytes(outputjson);
-
-            //try
-            //{
-            //    clientaccept.client.Send(outputdata);
-            //} 
-            //catch (System.Net.Sockets.SocketException d)
-            //{
-
-            //};
+            
         }
 
 
 
         private void button3_Click(object sender, EventArgs e)
         {
-
+            
+            
             if (button3.Text == "►")
-            {
+            {   
+                sk.cm.command = "play";
+                
+                
                 Player.Play();
+                sk.cm.name = Player.CurrentSong.Name;
+                sk.SendData();
                 button3.Text = "||";
                 return;
             }
 
             if (button3.Text == "||")
             {
+                sk.cm.command = "pause";
                 Player.Pause();
+                sk.cm.name = Player.CurrentSong.Name;
+                sk.SendData();
                 button3.Text = "►";
                 return;
             }
-
+            
 
         }
 
@@ -124,7 +165,7 @@ namespace WinFormPlayer
             Player.SelectAudio(((ListBox)sender).SelectedIndex);
 
             button3.Text = "||";
-
+            sk.SendData();
 
         }
 
@@ -137,7 +178,9 @@ namespace WinFormPlayer
             else
                 listBox1.SetSelected(0, true);
             button3.Text = "||";
-
+            sk.cm.command = "next";
+            
+            sk.SendData();
         }
 
         private void buPrev_Click(object sender, EventArgs e)
@@ -148,6 +191,9 @@ namespace WinFormPlayer
             else
                 listBox1.SetSelected(listBox1.Items.Count - 1, true);
             button3.Text = "||";
+            sk.cm.command = "prev";
+         
+            sk.SendData();
 
         }
 
@@ -157,22 +203,9 @@ namespace WinFormPlayer
             {
 
             Player.Volume = ((TrackBar) sender).Value;
-            sf.volume = Player.Volume;
-            byte[] outputdata;
-            outputdata = new byte[1024];
-            string outputjson = System.Text.Json.JsonSerializer.Serialize<SongInfo>(sf);
-
-            outputdata = Encoding.Unicode.GetBytes(outputjson);
-
-            try
-            {
-                clientsend.client.Send(outputdata);
-
-            }
-            catch (System.Net.Sockets.SocketException d)
-            {
-
-            };
+            sk.cm.value = Player.Volume.ToString();
+            sk.SendData();
+           
 
 
         }
@@ -180,54 +213,7 @@ namespace WinFormPlayer
 
 
 
-        private void InputServerWork()
-        {
-
-            while (true)
-                if (clientaccept.client.Available > 0)
-                {
-                    byte[] data;
-                    // получаем ответ
-                    data = new byte[256]; // буфер для ответа
-                    StringBuilder builder = new StringBuilder();
-                    int bytes = 0; // количество полученных байт
-
-                    do
-                    {
-                        bytes = clientaccept.client.Receive(data, data.Length, 0);
-                        builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-                    }
-                    while (clientaccept.client.Available > 0);
-
-                    clientaccept.msg = builder.ToString();
-
-                    if (clientaccept.msg == "play" || clientaccept.msg == "stop")
-                    {
-                        Invoke((MethodInvoker)delegate {
-                            button3_Click(button3, EventArgs.Empty);
-                        });
-                    }
-                    else if (clientaccept.msg == "next")
-                    {
-                        Invoke((MethodInvoker)delegate {
-                            buNext_Click(buNext, EventArgs.Empty);
-                        });
-                    }
-                    else if (clientaccept.msg == "prev")
-                    {
-                        Invoke((MethodInvoker)delegate {
-                            buPrev_Click(buPrev, EventArgs.Empty);
-                        });
-                    }
-
-                }
-                else Thread.Sleep(100);
-        }
-
-        private async void InputServerWorkAsync()
-        {
-            await Task.Run(() => InputServerWork());
-        }
+        
 
         private void laName_DockChanged(object sender, EventArgs e)
         {

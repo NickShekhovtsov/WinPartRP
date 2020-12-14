@@ -8,10 +8,7 @@ using WMPLib;
 
 namespace WinFormPlayer
 {
-    public enum Status
-    {
-
-    }
+    
     class Song
     {
         public string Name { get; set; }
@@ -29,10 +26,17 @@ namespace WinFormPlayer
 
     }
     class AudioPlayer
-    {
+    {   public enum Status
+            {
+                Playing,Pause
+            }
         private WindowsMediaPlayer wmp;
         public List<Song> playlist;
         private int currentIndex;
+        public Status PlaStatus=Status.Pause;
+        public delegate void vc();
+        public event vc VolumeChanged;
+        
         public Song CurrentSong => playlist[currentIndex];
         public AudioPlayer()
         {
@@ -63,16 +67,22 @@ namespace WinFormPlayer
         public int Volume
         {   
             get { return wmp.settings.volume; }
-            set {wmp.settings.volume = value; }
+            set {
+                
+                wmp.settings.volume = value;
+                VolumeChanged();
+            }
         }
         public void Play()
         {
             wmp.controls.play();
-            
+            PlaStatus = Status.Playing;
+           
         }
         public void Pause()
         {
             wmp.controls.pause();
+            PlaStatus = Status.Pause;
             
         }
 
@@ -101,7 +111,7 @@ namespace WinFormPlayer
         }
 
         public event Action<object,Song> AudioSelected;
-        public event Action<object, Song> VolumeChanged;
+        
 
     }
 }
