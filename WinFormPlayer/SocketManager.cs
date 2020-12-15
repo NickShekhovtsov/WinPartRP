@@ -10,8 +10,9 @@ using System.Text.Json;
 
 namespace WinFormPlayer
 {
+    
     class SocketManager
-    {
+    { 
         string ip = "127.0.0.1";
         int port = 8000;
         TcpListener server;
@@ -25,7 +26,7 @@ namespace WinFormPlayer
         {
             this.ip = ip;
             this.port = port;
-            server = new TcpListener(IPAddress.Parse(ip), port);
+            server = new TcpListener(IPAddress.Any, port);
 
             server.Start();
             Console.WriteLine("Server has started on {0}:{1}, Waiting for a connection...", ip, port);
@@ -82,7 +83,7 @@ namespace WinFormPlayer
             // enter to an infinite cycle to be able to handle every change in stream
             while (true)
             {
-                while (!stream.DataAvailable) ;
+               while (!stream.DataAvailable) ;
                 while (client.Available < 3) ; // match against "get"
 
                 byte[] bytes = new byte[client.Available];

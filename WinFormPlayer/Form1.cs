@@ -31,12 +31,12 @@ namespace WinFormPlayer
         {
 
             InitializeComponent();
-            
+            button3.Image = Properties.Resources.Старт1;
 
             Thread ServTh = new Thread(
                 new ThreadStart(sk.Run));
             ServTh.Start();
-
+            
            
             Player.VolumeChanged += () =>
               {
@@ -47,54 +47,63 @@ namespace WinFormPlayer
               };
 
             sk.DataCome += ()=>{
-                switch(sk.cm.command)
-                { 
-                    case "play":
-                        //Player.Play();
-                        Invoke((MethodInvoker)delegate
-                        {
-                            button3_Click(button3, EventArgs.Empty);
-                        });
-                        break;
+                try
+                {
+                    switch (sk.cm.command)
+                    {
+                        case "play":
 
-            
-                    case "pause":
-                        Invoke((MethodInvoker)delegate
-                        {
-                            button3_Click(button3, EventArgs.Empty);
-                        });
+                            //Player.Play();
+                            Invoke((MethodInvoker)delegate
+                            {
+                                button3_Click(button3, EventArgs.Empty);
+                            });
 
-                        break;
+                            break;
 
 
-                
 
-                
-                    case "next":
-                        Invoke((MethodInvoker)delegate
-                        {
-                            buNext_Click(buNext, EventArgs.Empty);
-                        });
 
-                        break;
+                        case "pause":
+                            Invoke((MethodInvoker)delegate
+                            {
+                                button3_Click(button3, EventArgs.Empty);
+                            });
 
-                    case "volume":
-                       
+                            break;
+
+
+
+
+
+                        case "next":
+                            Invoke((MethodInvoker)delegate
+                            {
+                                buNext_Click(buNext, EventArgs.Empty);
+                            });
+
+                            break;
+
+                        case "volume":
+
                             Player.Volume = int.Parse(sk.cm.value);
-                        Console.WriteLine($"Playervol {Player.Volume}");
+                            Console.WriteLine($"Playervol {Player.Volume}");
 
-                        break;
+                            break;
 
-                    case "prev":
-                        Invoke((MethodInvoker)delegate
-                        {
-                            buPrev_Click(buPrev, EventArgs.Empty);
-                        });
+                        case "prev":
+                            Invoke((MethodInvoker)delegate
+                            {
+                                buPrev_Click(buPrev, EventArgs.Empty);
+                            });
 
-                        break;
+                            break;
 
 
+                    }
                 }
+                catch(Exception e)
+                { }
 
             };
             Player.AudioSelected += (s, e) =>
@@ -142,6 +151,7 @@ namespace WinFormPlayer
                 sk.cm.name = Player.CurrentSong.Name;
                 sk.SendData();
                 button3.Text = "||";
+                button3.Image = WinFormPlayer.Properties.Resources.Старт2;
                 return;
             }
 
@@ -152,6 +162,7 @@ namespace WinFormPlayer
                 sk.cm.name = Player.CurrentSong.Name;
                 sk.SendData();
                 button3.Text = "►";
+                button3.Image = Properties.Resources.Старт1;
                 return;
             }
             
@@ -163,8 +174,8 @@ namespace WinFormPlayer
             if (((ListBox)sender).SelectedItem == null)
                 return;
             Player.SelectAudio(((ListBox)sender).SelectedIndex);
-
             button3.Text = "||";
+            button3.Image = WinFormPlayer.Properties.Resources.Старт2;
             sk.SendData();
 
         }
@@ -179,7 +190,7 @@ namespace WinFormPlayer
                 listBox1.SetSelected(0, true);
             button3.Text = "||";
             sk.cm.command = "next";
-            
+            button3.Image = WinFormPlayer.Properties.Resources.Старт2;
             sk.SendData();
         }
 
@@ -192,7 +203,7 @@ namespace WinFormPlayer
                 listBox1.SetSelected(listBox1.Items.Count - 1, true);
             button3.Text = "||";
             sk.cm.command = "prev";
-         
+            button3.Image = WinFormPlayer.Properties.Resources.Старт2;
             sk.SendData();
 
         }

@@ -105,6 +105,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -119,6 +120,28 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\вперед.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\вперед1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\назад.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\назад1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Старт.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Старт1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Старт2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
