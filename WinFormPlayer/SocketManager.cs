@@ -31,13 +31,13 @@ namespace WinFormPlayer
             server.Start();
             Console.WriteLine("Server has started on {0}:{1}, Waiting for a connection...", ip, port);
 
-             client = server.AcceptTcpClient();
+            
             Console.WriteLine("A client connected.");
 
-             stream = client.GetStream();
+             
         }
 
-        public static byte[] CreateFrameFromString(string message)
+        private byte[] CreateFrameFromString(string message)
         {
             var payload = Encoding.UTF8.GetBytes(message);
 
@@ -79,9 +79,10 @@ namespace WinFormPlayer
         public  void Run()
         { 
             
-
+           client = server.AcceptTcpClient();
+           stream = client.GetStream();
             // enter to an infinite cycle to be able to handle every change in stream
-            while (true)
+            while (client.Connected)
             {
                while (!stream.DataAvailable) ;
                 while (client.Available < 3) ; // match against "get"
@@ -177,13 +178,18 @@ namespace WinFormPlayer
         }
         public void SendData()
         {
+
+
             try
             {
+
                 string json = JsonSerializer.Serialize<Commander>(cm);
                 byte[] responsee = CreateFrameFromString(json);
-                stream.Write(responsee, 0, responsee.Length);
+                if (stream!=null)stream.Write(responsee, 0, responsee.Length);
+               
+                
             }
-            catch (SocketException e)
+            catch(SocketException e)
             {
                 Console.WriteLine("Ничерта не отправилось");
             }

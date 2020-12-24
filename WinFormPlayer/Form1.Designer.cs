@@ -31,27 +31,28 @@ namespace WinFormPlayer
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RemotePlayer));
-            this.button1 = new System.Windows.Forms.Button();
+            this.buOpen = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.laName = new System.Windows.Forms.Label();
             this.buNext = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.buPlay = new System.Windows.Forms.Button();
             this.buPrev = new System.Windows.Forms.Button();
+            this.buDel = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // buOpen
             // 
-            this.button1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.button1.ForeColor = System.Drawing.Color.Black;
-            this.button1.Location = new System.Drawing.Point(36, 278);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(287, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Open";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.buOpen.BackColor = System.Drawing.SystemColors.Highlight;
+            this.buOpen.ForeColor = System.Drawing.Color.Black;
+            this.buOpen.Location = new System.Drawing.Point(36, 278);
+            this.buOpen.Name = "buOpen";
+            this.buOpen.Size = new System.Drawing.Size(143, 23);
+            this.buOpen.TabIndex = 0;
+            this.buOpen.Text = "Open";
+            this.buOpen.UseVisualStyleBackColor = false;
+            this.buOpen.Click += new System.EventHandler(this.buOpen_Click);
             // 
             // listBox1
             // 
@@ -98,19 +99,19 @@ namespace WinFormPlayer
             this.buNext.UseVisualStyleBackColor = false;
             this.buNext.Click += new System.EventHandler(this.buNext_Click);
             // 
-            // button3
+            // buPlay
             // 
-            this.button3.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 1F);
-            this.button3.ForeColor = System.Drawing.Color.Transparent;
-            this.button3.ImageKey = "(отсутствует)";
-            this.button3.Location = new System.Drawing.Point(129, 342);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(98, 93);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "start";
-            this.button3.UseVisualStyleBackColor = false;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.buPlay.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.buPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 1F);
+            this.buPlay.ForeColor = System.Drawing.Color.Transparent;
+            this.buPlay.ImageKey = "(отсутствует)";
+            this.buPlay.Location = new System.Drawing.Point(129, 342);
+            this.buPlay.Name = "buPlay";
+            this.buPlay.Size = new System.Drawing.Size(98, 93);
+            this.buPlay.TabIndex = 2;
+            this.buPlay.Text = "start";
+            this.buPlay.UseVisualStyleBackColor = false;
+            this.buPlay.Click += new System.EventHandler(this.buPlay_Click);
             // 
             // buPrev
             // 
@@ -125,26 +126,40 @@ namespace WinFormPlayer
             this.buPrev.UseVisualStyleBackColor = false;
             this.buPrev.Click += new System.EventHandler(this.buPrev_Click);
             // 
+            // buDel
+            // 
+            this.buDel.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.buDel.ForeColor = System.Drawing.Color.Black;
+            this.buDel.Location = new System.Drawing.Point(181, 278);
+            this.buDel.Name = "buDel";
+            this.buDel.Size = new System.Drawing.Size(143, 23);
+            this.buDel.TabIndex = 7;
+            this.buDel.Text = "DeleteTracks";
+            this.buDel.UseVisualStyleBackColor = false;
+            this.buDel.Click += new System.EventHandler(this.buDel_Click);
+            // 
             // RemotePlayer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.ClientSize = new System.Drawing.Size(363, 505);
+            this.Controls.Add(this.buDel);
             this.Controls.Add(this.laName);
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.buNext);
             this.Controls.Add(this.listBox1);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.buPlay);
             this.Controls.Add(this.buPrev);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.buOpen);
             this.DoubleBuffered = true;
             this.ForeColor = System.Drawing.Color.Cornsilk;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximumSize = new System.Drawing.Size(379, 544);
             this.MinimumSize = new System.Drawing.Size(379, 544);
             this.Name = "RemotePlayer";
-            this.Text = "Remout Musik";
+            this.Text = "RemotePlayer";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.RemotePlayer_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.ResumeLayout(false);
@@ -154,13 +169,14 @@ namespace WinFormPlayer
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buOpen;
         private System.Windows.Forms.Button buPrev;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button buPlay;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Button buNext;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Label laName;
+        private System.Windows.Forms.Button buDel;
     }
 }
 

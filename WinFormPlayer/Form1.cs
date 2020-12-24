@@ -19,10 +19,9 @@ namespace WinFormPlayer
     {
         private SocketManager sk=new SocketManager("127.0.0.1",8000);
         private AudioPlayer Player = new AudioPlayer();
-        private SongInfo sf = new SongInfo();
+
         private Commander com=new Commander();
-        public delegate void Play();
-        public event Play OnPlay;
+       
         //ContainerForSongInfo cfsi = new ContainerForSongInfo();
 
         public object JsonSerializer { get; private set; }
@@ -31,7 +30,7 @@ namespace WinFormPlayer
         {
 
             InitializeComponent();
-            button3.Image = Properties.Resources.Старт1;
+            buPlay.Image = Properties.Resources.Старт1;
 
             Thread ServTh = new Thread(
                 new ThreadStart(sk.Run));
@@ -56,18 +55,23 @@ namespace WinFormPlayer
                             //Player.Play();
                             Invoke((MethodInvoker)delegate
                             {
-                                button3_Click(button3, EventArgs.Empty);
+                                buPlay_Click(buPlay, EventArgs.Empty);
                             });
 
                             break;
 
+                        case "volume":
 
+                            Player.Volume = int.Parse(sk.cm.value);
+                            Console.WriteLine($"Playervol {Player.Volume}");
+
+                            break;
 
 
                         case "pause":
                             Invoke((MethodInvoker)delegate
                             {
-                                button3_Click(button3, EventArgs.Empty);
+                                buPlay_Click(buPlay, EventArgs.Empty);
                             });
 
                             break;
@@ -84,12 +88,7 @@ namespace WinFormPlayer
 
                             break;
 
-                        case "volume":
-
-                            Player.Volume = int.Parse(sk.cm.value);
-                            Console.WriteLine($"Playervol {Player.Volume}");
-
-                            break;
+                       
 
                         case "prev":
                             Invoke((MethodInvoker)delegate
@@ -118,7 +117,7 @@ namespace WinFormPlayer
 
         
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buOpen_Click(object sender, EventArgs e)
         {
             //cfsi.songInfos = new List<SongInfo>();
             using (OpenFileDialog dialog = new OpenFileDialog() { Multiselect = true, Filter = "Audio Files|*.mp3" })
@@ -138,34 +137,35 @@ namespace WinFormPlayer
 
 
 
-        private void button3_Click(object sender, EventArgs e)
+        private void buPlay_Click(object sender, EventArgs e)
         {
-            
-            
-            if (button3.Text == "►")
-            {   
-                sk.cm.command = "play";
-                
-                
-                Player.Play();
-                sk.cm.name = Player.CurrentSong.Name;
-                sk.SendData();
-                button3.Text = "||";
-                button3.Image = WinFormPlayer.Properties.Resources.Старт2;
-                return;
-            }
 
-            if (button3.Text == "||")
+            if (listBox1.Items.Count > 0)
             {
-                sk.cm.command = "pause";
-                Player.Pause();
-                sk.cm.name = Player.CurrentSong.Name;
-                sk.SendData();
-                button3.Text = "►";
-                button3.Image = Properties.Resources.Старт1;
-                return;
+                if (buPlay.Text == "►")
+                {
+                    sk.cm.command = "play";
+
+
+                    Player.Play();
+                    sk.cm.name = Player.CurrentSong.Name;
+                    sk.SendData();
+                    buPlay.Text = "||";
+                    buPlay.Image = WinFormPlayer.Properties.Resources.Старт2;
+                    return;
+                }
+
+                if (buPlay.Text == "||")
+                {
+                    sk.cm.command = "pause";
+                    Player.Pause();
+                    sk.cm.name = Player.CurrentSong.Name;
+                    sk.SendData();
+                    buPlay.Text = "►";
+                    buPlay.Image = Properties.Resources.Старт1;
+                    return;
+                }
             }
-            
 
         }
 
@@ -174,8 +174,8 @@ namespace WinFormPlayer
             if (((ListBox)sender).SelectedItem == null)
                 return;
             Player.SelectAudio(((ListBox)sender).SelectedIndex);
-            button3.Text = "||";
-            button3.Image = WinFormPlayer.Properties.Resources.Старт2;
+            buPlay.Text = "||";
+            buPlay.Image = WinFormPlayer.Properties.Resources.Старт2;
             sk.SendData();
 
         }
@@ -183,29 +183,34 @@ namespace WinFormPlayer
 
         private void buNext_Click(object sender, EventArgs e)
         {
-            Player.Next();
-            if (listBox1.SelectedIndex < listBox1.Items.Count - 1)
-                listBox1.SetSelected(++listBox1.SelectedIndex, true);
-            else
-                listBox1.SetSelected(0, true);
-            button3.Text = "||";
-            sk.cm.command = "next";
-            button3.Image = WinFormPlayer.Properties.Resources.Старт2;
-            sk.SendData();
+            if (listBox1.Items.Count > 0)
+            {
+                Player.Next();
+                if (listBox1.SelectedIndex < listBox1.Items.Count - 1)
+                    listBox1.SetSelected(++listBox1.SelectedIndex, true);
+                else
+                    listBox1.SetSelected(0, true);
+                buPlay.Text = "||";
+                sk.cm.command = "next";
+                buPlay.Image = WinFormPlayer.Properties.Resources.Старт2;
+                sk.SendData();
+            }
         }
 
         private void buPrev_Click(object sender, EventArgs e)
         {
-            Player.Previous();
-            if (listBox1.SelectedIndex > 0)
-                listBox1.SetSelected(--listBox1.SelectedIndex, true);
-            else
-                listBox1.SetSelected(listBox1.Items.Count - 1, true);
-            button3.Text = "||";
-            sk.cm.command = "prev";
-            button3.Image = WinFormPlayer.Properties.Resources.Старт2;
-            sk.SendData();
-
+            if (listBox1.Items.Count > 0)
+            {
+                Player.Previous();
+                if (listBox1.SelectedIndex > 0)
+                    listBox1.SetSelected(--listBox1.SelectedIndex, true);
+                else
+                    listBox1.SetSelected(listBox1.Items.Count - 1, true);
+                buPlay.Text = "||";
+                sk.cm.command = "prev";
+                buPlay.Image = WinFormPlayer.Properties.Resources.Старт2;
+                sk.SendData();
+            }
         }
 
 
@@ -234,6 +239,20 @@ namespace WinFormPlayer
         private void Form1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void RemotePlayer_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
+        private void buDel_Click(object sender, EventArgs e)
+        {   
+            Player.Stop();
+            listBox1.Items.Clear();
+            Player.playlist.Clear();
+            laName.Text = "";
+            buPlay.Image = Properties.Resources.Старт1;
         }
     }
 }
