@@ -189,7 +189,7 @@ namespace WinFormPlayer
                
                 
             }
-            catch(SocketException e)
+            catch(Exception e)
             {
                 Console.WriteLine("Ничерта не отправилось");
             }
