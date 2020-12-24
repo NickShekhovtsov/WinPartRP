@@ -142,6 +142,7 @@ namespace WinFormPlayer
             // laPath
             // 
             this.laPath.AutoSize = true;
+            this.laPath.ForeColor = System.Drawing.Color.Crimson;
             this.laPath.Location = new System.Drawing.Point(33, 9);
             this.laPath.Name = "laPath";
             this.laPath.Size = new System.Drawing.Size(13, 13);

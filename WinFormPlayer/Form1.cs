@@ -14,7 +14,8 @@ using System.IO;
 
 namespace WinFormPlayer
 {
-
+    enum TypeWriteToFile
+    { Directory,Empty};
     public partial class RemotePlayer : Form
     {
         private SocketManager sk=new SocketManager("127.0.0.1",8000);
@@ -116,6 +117,7 @@ namespace WinFormPlayer
             string dir = Directory.GetCurrentDirectory();
             if (File.Exists($"{dir}/note.txt"))
             {
+               
                 using (FileStream fstream = File.OpenRead($"{dir}/note.txt"))
                 {
                     // преобразуем строку в байты
@@ -132,7 +134,7 @@ namespace WinFormPlayer
                     Player.LoadAudio(allfiles);
                     listBox1.Items.Clear();
                 listBox1.Items.AddRange(Player.Playlist);
-                laPath.Text = $"Current path-{folderPath}";
+                laPath.Text = $"{folderPath}";
                 }
                 catch (Exception e)
                 {
@@ -160,40 +162,35 @@ namespace WinFormPlayer
 
             //    }
             //}
+
+
+
+
+
             FolderBrowserDialog fbd = new FolderBrowserDialog();
-            if (fbd.ShowDialog()==DialogResult.OK)
+            if (fbd.ShowDialog() == DialogResult.OK)
             {
                 Console.WriteLine(fbd.SelectedPath);
-            }
-            string[] allfiles = Directory.GetFiles(fbd.SelectedPath,"*.mp3",SearchOption.TopDirectoryOnly);
-            Player.LoadAudio(allfiles);
-            listBox1.Items.Clear();
-            listBox1.Items.AddRange(Player.Playlist);
 
-            string dir = Directory.GetCurrentDirectory();
-            using (FileStream fstream = new FileStream($"{dir}/note.txt", FileMode.Create))
-            {
-                // преобразуем строку в байты
-                byte[] array = System.Text.Encoding.Default.GetBytes(fbd.SelectedPath);
-                // запись массива байтов в файл
-                
-                fstream.Write(array, 0, array.Length);
-                Console.WriteLine("Текст записан в файл");
+
+
+                string[] allfiles = Directory.GetFiles(fbd.SelectedPath, "*.mp3", SearchOption.TopDirectoryOnly);
+                folderPath = fbd.SelectedPath;
+                Player.LoadAudio(allfiles);
+                listBox1.Items.Clear();
+                listBox1.Items.AddRange(Player.Playlist);
+
+                WriteToFile(TypeWriteToFile.Directory);
+
+                PlayerStop();
+
                 laPath.Text = fbd.SelectedPath;
+
+
+                Player.LoadAudio(allfiles);
+                listBox1.Items.Clear();
+                listBox1.Items.AddRange(Player.Playlist);
             }
-
-            Player.Stop();
-            listBox1.Items.Clear();
-            Player.playlist.Clear();
-            laName.Text = "";
-            laPath.Text = fbd.SelectedPath;
-            buPlay.Image = Properties.Resources.Старт1;
-            folderPath = "";
-
-            Player.LoadAudio(allfiles);
-            listBox1.Items.Clear();
-            listBox1.Items.AddRange(Player.Playlist);
-
 
         }
 
@@ -206,25 +203,19 @@ namespace WinFormPlayer
             {
                 if (buPlay.Text == "►")
                 {
+                    PlayerStart();
                     sk.cm.command = "play";
-
-
-                    Player.Play();
                     sk.cm.name = Player.CurrentSong.Name;
                     sk.SendData();
-                    buPlay.Text = "||";
-                    buPlay.Image = WinFormPlayer.Properties.Resources.Старт2;
                     return;
                 }
 
                 if (buPlay.Text == "||")
                 {
+                    PlayerPause();
                     sk.cm.command = "pause";
-                    Player.Pause();
                     sk.cm.name = Player.CurrentSong.Name;
                     sk.SendData();
-                    buPlay.Text = "►";
-                    buPlay.Image = Properties.Resources.Старт1;
                     return;
                 }
             }
@@ -236,8 +227,7 @@ namespace WinFormPlayer
             if (((ListBox)sender).SelectedItem == null)
                 return;
             Player.SelectAudio(((ListBox)sender).SelectedIndex);
-            buPlay.Text = "||";
-            buPlay.Image = WinFormPlayer.Properties.Resources.Старт2;
+            PlayerStart();
             sk.SendData();
             
         }
@@ -252,9 +242,8 @@ namespace WinFormPlayer
                     listBox1.SetSelected(++listBox1.SelectedIndex, true);
                 else
                     listBox1.SetSelected(0, true);
-                buPlay.Text = "||";
+                PlayerStart();
                 sk.cm.command = "next";
-                buPlay.Image = WinFormPlayer.Properties.Resources.Старт2;
                 sk.SendData();
             }
         }
@@ -268,9 +257,8 @@ namespace WinFormPlayer
                     listBox1.SetSelected(--listBox1.SelectedIndex, true);
                 else
                     listBox1.SetSelected(listBox1.Items.Count - 1, true);
-                buPlay.Text = "||";
+                PlayerStart();
                 sk.cm.command = "prev";
-                buPlay.Image = WinFormPlayer.Properties.Resources.Старт2;
                 sk.SendData();
             }
         }
@@ -307,29 +295,74 @@ namespace WinFormPlayer
         }
 
         private void buDel_Click(object sender, EventArgs e)
-        {   
-            Player.Stop();
-            listBox1.Items.Clear();
-            Player.playlist.Clear();
-            laName.Text = "";
+        {
+            PlayerStop();
+            CleanPlayList();
+            WriteToFile(TypeWriteToFile.Empty);
             laPath.Text = "";
-            buPlay.Image = Properties.Resources.Старт1;
-            folderPath = "";
-            string dir = Directory.GetCurrentDirectory();
-            using (FileStream fstream = new FileStream($"{dir}/note.txt", FileMode.Create))
-            {
-                // преобразуем строку в байты
-                byte[] array = System.Text.Encoding.Default.GetBytes("///");
-                // запись массива байтов в файл
-                fstream.Write(array, 0, array.Length);
-                Console.WriteLine("Текст записан в файл");
-                
-            }
         }
 
         private void label1_Click(object sender, EventArgs e)
         {
 
         }
+        private void CleanPlayList()
+        {
+            
+            listBox1.Items.Clear();
+            Player.playlist.Clear();
+           
+        }
+
+        private void PlayerStop()
+        {
+            Player.Stop();
+            laName.Text = "";
+            buPlay.Text = "►";
+            buPlay.Image = Properties.Resources.Старт1;
+        }
+
+        private void PlayerStart()
+        {
+            Player.Play();
+            buPlay.Text = "||";
+            buPlay.Image = WinFormPlayer.Properties.Resources.Старт2;
+
+        }
+        private void PlayerPause()
+        {
+            Player.Pause();
+            buPlay.Text = "►";
+            buPlay.Image = Properties.Resources.Старт1;
+        }
+
+        private void WriteToFile(TypeWriteToFile type)
+        {
+            string dir = Directory.GetCurrentDirectory();
+            using (FileStream fstream = new FileStream($"{dir}/note.txt", FileMode.Create))
+            {
+                if (type == TypeWriteToFile.Directory)
+                {
+                    byte[] array = System.Text.Encoding.Default.GetBytes(folderPath);
+                    // запись массива байтов в файл
+                    fstream.Write(array, 0, array.Length);
+                    Console.WriteLine("Текст записан в файл");
+                    laPath.Text = folderPath;
+                }
+
+                if (type == TypeWriteToFile.Empty)
+                {
+                    
+                    byte[] array = System.Text.Encoding.Default.GetBytes("Empty");
+                    // запись массива байтов в файл
+                    fstream.Write(array, 0, array.Length);
+                    Console.WriteLine("Текст записан в файл");
+                }
+
+
+                
+            }
+        }
+
     }
 }
