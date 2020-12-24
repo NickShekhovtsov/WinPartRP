@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
+using System.IO;
 
 namespace WinFormPlayer
 {
@@ -21,6 +21,7 @@ namespace WinFormPlayer
         private AudioPlayer Player = new AudioPlayer();
 
         private Commander com=new Commander();
+        private string folderPath;
        
         //ContainerForSongInfo cfsi = new ContainerForSongInfo();
 
@@ -112,27 +113,88 @@ namespace WinFormPlayer
                   
                   
               };
-
+            string dir = Directory.GetCurrentDirectory();
+            if (File.Exists($"{dir}/note.txt"))
+            {
+                using (FileStream fstream = File.OpenRead($"{dir}/note.txt"))
+                {
+                    // преобразуем строку в байты
+                    byte[] array = new byte[fstream.Length];
+                    // считываем данные
+                    fstream.Read(array, 0, array.Length);
+                    // декодируем байты в строку
+                    folderPath = System.Text.Encoding.Default.GetString(array);
+                    Console.WriteLine($"Текст из файла: {folderPath}");
+                }
+                try
+                {
+                    string[] allfiles = Directory.GetFiles(folderPath, "*.mp3", SearchOption.TopDirectoryOnly);
+                    Player.LoadAudio(allfiles);
+                    listBox1.Items.Clear();
+                listBox1.Items.AddRange(Player.Playlist);
+                laPath.Text = $"Current path-{folderPath}";
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("wrong path");
+                }
+                
+                
+            }
         }
 
         
 
         private void buOpen_Click(object sender, EventArgs e)
         {
-            //cfsi.songInfos = new List<SongInfo>();
-            using (OpenFileDialog dialog = new OpenFileDialog() { Multiselect = true, Filter = "Audio Files|*.mp3" })
-            {
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    Player.LoadAudio(dialog.FileNames);
-                    listBox1.Items.Clear();
-                    listBox1.Items.AddRange(Player.Playlist);
 
+            //using (OpenFileDialog dialog = new OpenFileDialog() { Multiselect = true, Filter = "Audio Files|*.mp3" })
+            //{
+            //    if (dialog.ShowDialog() == DialogResult.OK)
+            //    {
                     
-                }
+            //        Player.LoadAudio(dialog.FileNames);
+            //        listBox1.Items.Clear();
+            //        listBox1.Items.AddRange(Player.Playlist);
+
+
+            //    }
+            //}
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            if (fbd.ShowDialog()==DialogResult.OK)
+            {
+                Console.WriteLine(fbd.SelectedPath);
+            }
+            string[] allfiles = Directory.GetFiles(fbd.SelectedPath,"*.mp3",SearchOption.TopDirectoryOnly);
+            Player.LoadAudio(allfiles);
+            listBox1.Items.Clear();
+            listBox1.Items.AddRange(Player.Playlist);
+
+            string dir = Directory.GetCurrentDirectory();
+            using (FileStream fstream = new FileStream($"{dir}/note.txt", FileMode.Create))
+            {
+                // преобразуем строку в байты
+                byte[] array = System.Text.Encoding.Default.GetBytes(fbd.SelectedPath);
+                // запись массива байтов в файл
+                
+                fstream.Write(array, 0, array.Length);
+                Console.WriteLine("Текст записан в файл");
+                laPath.Text = fbd.SelectedPath;
             }
 
-            
+            Player.Stop();
+            listBox1.Items.Clear();
+            Player.playlist.Clear();
+            laName.Text = "";
+            laPath.Text = fbd.SelectedPath;
+            buPlay.Image = Properties.Resources.Старт1;
+            folderPath = "";
+
+            Player.LoadAudio(allfiles);
+            listBox1.Items.Clear();
+            listBox1.Items.AddRange(Player.Playlist);
+
+
         }
 
 
@@ -177,7 +239,7 @@ namespace WinFormPlayer
             buPlay.Text = "||";
             buPlay.Image = WinFormPlayer.Properties.Resources.Старт2;
             sk.SendData();
-
+            
         }
 
 
@@ -221,9 +283,7 @@ namespace WinFormPlayer
             Player.Volume = ((TrackBar) sender).Value;
             sk.cm.value = Player.Volume.ToString();
             sk.SendData();
-           
-
-
+          
         }
 
 
@@ -252,7 +312,24 @@ namespace WinFormPlayer
             listBox1.Items.Clear();
             Player.playlist.Clear();
             laName.Text = "";
+            laPath.Text = "";
             buPlay.Image = Properties.Resources.Старт1;
+            folderPath = "";
+            string dir = Directory.GetCurrentDirectory();
+            using (FileStream fstream = new FileStream($"{dir}/note.txt", FileMode.Create))
+            {
+                // преобразуем строку в байты
+                byte[] array = System.Text.Encoding.Default.GetBytes("///");
+                // запись массива байтов в файл
+                fstream.Write(array, 0, array.Length);
+                Console.WriteLine("Текст записан в файл");
+                
+            }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

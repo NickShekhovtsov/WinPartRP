@@ -39,6 +39,7 @@ namespace WinFormPlayer
             this.buPlay = new System.Windows.Forms.Button();
             this.buPrev = new System.Windows.Forms.Button();
             this.buDel = new System.Windows.Forms.Button();
+            this.laPath = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -57,7 +58,7 @@ namespace WinFormPlayer
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(36, 25);
+            this.listBox1.Location = new System.Drawing.Point(36, 33);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(288, 238);
             this.listBox1.TabIndex = 3;
@@ -138,12 +139,23 @@ namespace WinFormPlayer
             this.buDel.UseVisualStyleBackColor = false;
             this.buDel.Click += new System.EventHandler(this.buDel_Click);
             // 
+            // laPath
+            // 
+            this.laPath.AutoSize = true;
+            this.laPath.Location = new System.Drawing.Point(33, 9);
+            this.laPath.Name = "laPath";
+            this.laPath.Size = new System.Drawing.Size(13, 13);
+            this.laPath.TabIndex = 8;
+            this.laPath.Text = "..";
+            this.laPath.Click += new System.EventHandler(this.label1_Click);
+            // 
             // RemotePlayer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.ClientSize = new System.Drawing.Size(363, 505);
+            this.Controls.Add(this.laPath);
             this.Controls.Add(this.buDel);
             this.Controls.Add(this.laName);
             this.Controls.Add(this.trackBar1);
@@ -177,6 +189,7 @@ namespace WinFormPlayer
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Label laName;
         private System.Windows.Forms.Button buDel;
+        private System.Windows.Forms.Label laPath;
     }
 }
 
