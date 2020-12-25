@@ -100,11 +100,22 @@ namespace WinFormPlayer
 
                             break;
 
+                        case "index":
+                           // listBox1.SelectedIndex = int.Parse(sk.cm.currentSongIndex);
+                            Invoke((MethodInvoker)delegate
+                            {
+                                listBox1.SelectedIndex = int.Parse(sk.cm.currentSongIndex);
+                                listBox1_SelectedIndexChanged_1(listBox1, EventArgs.Empty);
+                            });
+                            
+                            break;
 
                     }
                 }
                 catch(Exception e)
-                { }
+                {
+                    Console.WriteLine("Ошибка в интерпретации данных");
+                }
 
             };
             Player.AudioSelected += (s, e) =>
@@ -133,8 +144,10 @@ namespace WinFormPlayer
                     string[] allfiles = Directory.GetFiles(folderPath, "*.mp3", SearchOption.TopDirectoryOnly);
                     Player.LoadAudio(allfiles);
                     listBox1.Items.Clear();
-                listBox1.Items.AddRange(Player.Playlist);
-                laPath.Text = $"{folderPath}";
+                    listBox1.Items.AddRange(Player.Playlist);
+                    laPath.Text = $"{folderPath}";
+                    sk.cm.songs = Player.Playlist;
+                    sk.SendData();
                 }
                 catch (Exception e)
                 {
@@ -190,6 +203,8 @@ namespace WinFormPlayer
                 Player.LoadAudio(allfiles);
                 listBox1.Items.Clear();
                 listBox1.Items.AddRange(Player.Playlist);
+                sk.cm.songs = Player.Playlist;
+                sk.SendData();
             }
 
         }
@@ -228,6 +243,7 @@ namespace WinFormPlayer
                 return;
             Player.SelectAudio(((ListBox)sender).SelectedIndex);
             PlayerStart();
+            sk.cm.currentSongIndex = listBox1.SelectedIndex.ToString();
             sk.SendData();
             
         }

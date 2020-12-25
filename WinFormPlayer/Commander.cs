@@ -14,5 +14,9 @@ namespace WinFormPlayer
         public bool flag { get; set; }
 
         public string name { get; set; } = "";
+
+        public string[] songs { get; set; }
+
+        public string currentSongIndex { get; set; }
     }
 }
