@@ -78,10 +78,6 @@ namespace WinFormPlayer
 
                             break;
 
-
-
-
-
                         case "next":
                             Invoke((MethodInvoker)delegate
                             {
@@ -101,7 +97,7 @@ namespace WinFormPlayer
                             break;
 
                         case "index":
-                           // listBox1.SelectedIndex = int.Parse(sk.cm.currentSongIndex);
+                           
                             Invoke((MethodInvoker)delegate
                             {
                                 listBox1.SelectedIndex = int.Parse(sk.cm.currentSongIndex);
@@ -114,7 +110,7 @@ namespace WinFormPlayer
                 }
                 catch(Exception e)
                 {
-                    Console.WriteLine("Ошибка в интерпретации данных");
+                    Console.WriteLine("Ошибка в пришедших данных");
                 }
 
             };
@@ -316,6 +312,11 @@ namespace WinFormPlayer
             CleanPlayList();
             WriteToFile(TypeWriteToFile.Empty);
             laPath.Text = "";
+            sk.cm.name = "";
+            sk.cm.songs = Player.Playlist;
+            sk.SendData();
+            
+            
         }
 
         private void label1_Click(object sender, EventArgs e)
