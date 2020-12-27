@@ -118,8 +118,11 @@ namespace WinFormPlayer
               {
                   laName.Text = e.Name;
                   sk.cm.name = e.Name;
-                  
-                  
+                  sk.cm.songs = Player.Playlist;
+                  sk.cm.flag = true;
+                  sk.SendData();
+                  sk.cm.flag = false;
+
               };
             string dir = Directory.GetCurrentDirectory();
             if (File.Exists($"{dir}/note.txt"))
@@ -143,7 +146,9 @@ namespace WinFormPlayer
                     listBox1.Items.AddRange(Player.Playlist);
                     laPath.Text = $"{folderPath}";
                     sk.cm.songs = Player.Playlist;
+                    sk.cm.flag = true;
                     sk.SendData();
+                    sk.cm.flag = false;
                 }
                 catch (Exception e)
                 {
@@ -200,7 +205,9 @@ namespace WinFormPlayer
                 listBox1.Items.Clear();
                 listBox1.Items.AddRange(Player.Playlist);
                 sk.cm.songs = Player.Playlist;
+                sk.cm.flag = true;
                 sk.SendData();
+                sk.cm.flag = false;
             }
 
         }
@@ -242,6 +249,7 @@ namespace WinFormPlayer
             sk.cm.currentSongIndex = listBox1.SelectedIndex.ToString();
             sk.SendData();
             
+
         }
 
 
@@ -314,9 +322,10 @@ namespace WinFormPlayer
             laPath.Text = "";
             sk.cm.name = "";
             sk.cm.songs = Player.Playlist;
+            sk.cm.flag = true;
             sk.SendData();
-            
-            
+            sk.cm.flag = false;
+
         }
 
         private void label1_Click(object sender, EventArgs e)
